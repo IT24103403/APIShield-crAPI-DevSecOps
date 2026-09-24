@@ -1,0 +1,12 @@
+title = "APIShield crAPI Secret Detection"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allow documentation templates and example configuration"
+
+paths = [
+    '''(^|/)secrets/\.env\.example$''',
+    '''(^|/)README\.md$'''
+]
