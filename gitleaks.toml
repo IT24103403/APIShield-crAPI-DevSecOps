@@ -7,6 +7,5 @@ useDefault = true
 description = "Allow documentation templates and example configuration"
 
 paths = [
-    '''(^|/)secrets/\.env\.example$''',
-    '''(^|/)README\.md$'''
+    '''(^|/)secrets/\.env\.example$'''
 ]
