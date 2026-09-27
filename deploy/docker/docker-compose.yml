@@ -14,7 +14,7 @@ services:
 
   crapi-identity:
     container_name: crapi-identity
-    image: crapi/crapi-identity:${VERSION:-latest}
+    image: crapi/crapi-identity:bola-fixed
     # ports:
     #  - "${LISTEN_IP:-127.0.0.1}:8080:8080"
     volumes:
@@ -317,7 +317,6 @@ services:
     #   - "${LISTEN_IP:-127.0.0.1}:8000:8000"
 
   mailhog:
-    user: root
     container_name: mailhog
     image: crapi/mailhog:${VERSION:-latest}
     environment:
