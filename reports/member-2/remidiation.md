@@ -40,3 +40,11 @@ security: prevent direct order status manipulation
  
 This provides traceability between the identified vulnerability and the implemented fix
  
+
+## Runtime Deployment Verfication
+
+Runtime deployment verification was successfully completed.
+ 
+The vulnerable source code was remediated and incorporated into a custom Docker image (crapi-workship-fixed:latest). The original deployment architecture relied on a prebuilt image (crapi/crapi-workshop:latest), preventing source code changes from being reflected automatically.
+ 
+After deploying the custom image and recreating the workshop container, the previously successful order-status manipulation attack was re-executed. The application no longer permitted direct status modification and no unauthorized refund was issued. This verified that the remediation was effective in both source code and runtime environments.
