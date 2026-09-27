@@ -1,0 +1,29 @@
+name: Semgrep SAST
+ 
+on:
+  push:
+  pull_request:
+ 
+jobs:
+  semgrep:
+    runs-on: ubuntu-latest
+ 
+    container:
+      image: semgrep/semgrep
+ 
+    steps:
+      - uses: actions/checkout@v4
+ 
+      - name: Run Semgrep Default Rules
+        run: |
+          semgrep scan \
+            --config p/default \
+            crAPI
+ 
+      - name: Run Custom Mass Assignment Rule
+        run: |
+          semgrep scan \
+            --config semgrep-rules/crapi-mass-assignment.yml \
+            crAPI
+ 
+ 
