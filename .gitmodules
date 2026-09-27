@@ -1,3 +1,3 @@
 [submodule "crAPI"]
-	path = crAPI
-	url = https://github.com/IT24103403/APIShield-crAPI-DevSecOps
+    path = crAPI
+    url = https://github.com/IT24103403/crAPI.git
