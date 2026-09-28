@@ -1,6 +1,4 @@
 # crAPI Secrets Validation Script
-# This script checks that required secrets are configured locally.
-# It does not print secret values.
 
 $envFile = Join-Path $PSScriptRoot ".env"
 
