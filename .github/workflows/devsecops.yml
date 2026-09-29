@@ -71,3 +71,17 @@ jobs:
       - name: Repository Build Validation
         run: |
           echo "Build validation completed successfully"
+
+  security-gate:
+    name: Security Gate
+    needs:
+      - semgrep
+      - filesystem-scan
+      - build
+ 
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: Security Review
+        run: |
+          echo "Security gate validation passed"
