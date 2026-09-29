@@ -40,5 +40,20 @@ jobs:
           semgrep scan \
           --config auto \
           /src
+
+  filesystem-scan:
+    name: Dependency and Repository Scan
+    needs: validate
+    runs-on: ubuntu-latest
  
+    steps:
+      - uses: actions/checkout@v4
+ 
+      - name: Trivy Filesystem Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
  
