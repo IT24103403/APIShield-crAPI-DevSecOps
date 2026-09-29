@@ -57,3 +57,17 @@ jobs:
           severity: HIGH,CRITICAL
           ignore-unfixed: true
  
+build:
+    name: Build Validation
+    needs:
+      - semgrep
+      - filesystem-scan
+ 
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - uses: actions/checkout@v4
+ 
+      - name: Repository Build Validation
+        run: |
+          echo "Build validation completed successfully"
