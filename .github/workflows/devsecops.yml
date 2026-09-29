@@ -57,7 +57,7 @@ jobs:
           severity: HIGH,CRITICAL
           ignore-unfixed: true
  
-build:
+  build:
     name: Build Validation
     needs:
       - semgrep
