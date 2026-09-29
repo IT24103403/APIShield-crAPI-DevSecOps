@@ -1,14 +1,16 @@
-# Secrets and environment files
+deploy/vagrant/*.log
+deploy/vagrant/.vagrant
+.secrets
+.vscode/
+*.local
+services/chatbot/db
+services/certs/
+docker-compose.local.yml
+
+# Local environment and secret files
 .env
 .env.*
 !.env.example
 
-# Local secret files
-secrets/.env
-secrets/*.secret
-secrets/*.key
-secrets/*.pem
-
-# OS files
-.DS_Store
-Thumbs.db
+# Local backup files
+*.backup
