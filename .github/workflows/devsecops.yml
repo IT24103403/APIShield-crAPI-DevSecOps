@@ -85,3 +85,26 @@ jobs:
       - name: Security Review
         run: |
           echo "Security gate validation passed"
+
+  publish-artifacts:
+    name: Publish Security Reports
+ 
+    needs:
+      - security-gate
+ 
+    runs-on: ubuntu-latest
+ 
+    if: always()
+ 
+    steps:
+      - uses: actions/checkout@v4
+ 
+      - name: Upload Security Evidence
+        uses: actions/upload-artifact@v4
+ 
+        with:
+          name: security-reports
+          path: |
+            docs/
+            evidence/
+ 
