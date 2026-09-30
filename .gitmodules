@@ -1,3 +1,0 @@
-git add .gitmodules
-git commit -m "Remove old crAPI submodule reference"
-git push origin member4-remediation
