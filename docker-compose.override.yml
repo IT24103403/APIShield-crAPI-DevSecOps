@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  crapi-identity:
+    environment:
+      - SMTP_HOST=mailhog
+      - SMTP_PORT=1025
+      - SMTP_EMAIL=test@example.com
+      - SMTP_PASS=dummy
+      - SMTP_FROM=no-reply@example.com
+      - SMTP_AUTH=false
+      - SMTP_STARTTLS=false
