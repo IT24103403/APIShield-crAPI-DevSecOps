@@ -1,3 +1,5 @@
 [submodule "crAPI"]
+	path = crAPI
+	url = https://github.com/IT24103827/crAPI.git
     path = crAPI
     url = https://github.com/IT24103403/crAPI.git
