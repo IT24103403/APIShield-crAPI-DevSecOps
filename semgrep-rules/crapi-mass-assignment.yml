@@ -1,0 +1,16 @@
+rules:
+  - id: crapi-client-controlled-order-status
+    message: >
+      Client-controlled request data is assigned directly to order status.
+      Restrict status transitions to trusted server-side workflows.
+    severity: ERROR
+    languages:
+      - python
+    patterns:
+      - pattern: $ORDER.status = $REQUEST_DATA["status"]
+    metadata:
+      category: security
+      cwe: "CWE-915: Improperly Controlled Modification of Dynamically-Determined Object Attributes"
+      technology:
+        - django
+      project: APIShield

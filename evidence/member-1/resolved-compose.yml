@@ -1,0 +1,423 @@
+name: docker
+services:
+  api.mypremiumdealership.com:
+    container_name: api.mypremiumdealership.com
+    deploy:
+      resources:
+        limits:
+          cpus: 0.1
+          memory: "52428800"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - bash -c 'echo -n "GET / HTTP/1.1\n\n" > /dev/tcp/127.0.0.1/443'
+      timeout: 15s
+      interval: 15s
+      retries: 15
+      start_period: 15s
+    image: crapi/gateway-service:latest
+    networks:
+      default: null
+  chromadb:
+    container_name: chromadb
+    environment:
+      IS_PERSISTENT: "TRUE"
+    healthcheck:
+      test:
+        - CMD
+        - /bin/bash
+        - -c
+        - cat < /dev/null > /dev/tcp/localhost/8000
+      timeout: 15s
+      interval: 15s
+      retries: 15
+      start_period: 20s
+    image: chromadb/chroma:latest
+    networks:
+      default: null
+    volumes:
+      - type: volume
+        source: chromadb-data
+        target: /data
+        volume: {}
+  crapi-chatbot:
+    container_name: crapi-chatbot
+    depends_on:
+      chromadb:
+        condition: service_healthy
+        required: true
+      crapi-identity:
+        condition: service_healthy
+        required: true
+      mongodb:
+        condition: service_healthy
+        required: true
+    environment:
+      ANTHROPIC_API_KEY: ""
+      API_PASSWORD: Admin!123
+      API_USER: admin@example.com
+      AWS_ACCESS_KEY_ID: ""
+      AWS_ASSUME_ROLE_ARN: ""
+      AWS_BEARER_TOKEN_BEDROCK: ""
+      AWS_EXTERNAL_ID: ""
+      AWS_REGION: ""
+      AWS_ROLE_SESSION_NAME: crapi-chatbot-session
+      AWS_SECRET_ACCESS_KEY: ""
+      AWS_SESSION_TOKEN: ""
+      AZURE_AD_TOKEN: ""
+      AZURE_OPENAI_API_KEY: ""
+      AZURE_OPENAI_API_VERSION: 2024-02-15-preview
+      AZURE_OPENAI_CHAT_DEPLOYMENT: ""
+      AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT: ""
+      AZURE_OPENAI_ENDPOINT: ""
+      CHATBOT_EMBEDDINGS_DIMENSIONS: "1536"
+      CHATBOT_EMBEDDINGS_MODEL: ""
+      CHATBOT_LIFE: "1"
+      CHATBOT_LLM_MODEL: ""
+      CHATBOT_LLM_PROVIDER: openai
+      CHATBOT_OPENAI_API_KEY: ""
+      CHATBOT_OPENAI_BASE_URL: ""
+      CHROMA_HOST: chromadb
+      CHROMA_PORT: "8000"
+      COHERE_API_KEY: ""
+      DB_HOST: postgresdb
+      DB_NAME: crapi
+      DB_PASSWORD: crapisecretpassword
+      DB_PORT: "5432"
+      DB_USER: admin
+      GOOGLE_APPLICATION_CREDENTIALS: ""
+      GROQ_API_KEY: ""
+      IDENTITY_SERVICE: crapi-identity:8080
+      MAX_CONTENT_LENGTH: "50000"
+      MISTRAL_API_KEY: ""
+      MONGO_DB_HOST: mongodb
+      MONGO_DB_NAME: crapi
+      MONGO_DB_PASSWORD: crapisecretpassword
+      MONGO_DB_PORT: "27017"
+      MONGO_DB_USER: admin
+      OPENAPI_SPEC: /app/resources/crapi-openapi-spec.json
+      SERVER_PORT: "5002"
+      TLS_ENABLED: "false"
+      VERTEX_LOCATION: ""
+      VERTEX_PROJECT: ""
+      WEB_SERVICE: crapi-web
+    image: crapi/crapi-chatbot:latest
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 5500
+        published: "5500"
+        protocol: tcp
+  crapi-community:
+    container_name: crapi-community
+    depends_on:
+      crapi-identity:
+        condition: service_healthy
+        required: true
+      mongodb:
+        condition: service_healthy
+        required: true
+      postgresdb:
+        condition: service_healthy
+        required: true
+    deploy:
+      resources:
+        limits:
+          cpus: 0.3
+          memory: "201326592"
+    environment:
+      DB_HOST: postgresdb
+      DB_NAME: crapi
+      DB_PASSWORD: crapisecretpassword
+      DB_PORT: "5432"
+      DB_USER: admin
+      IDENTITY_SERVICE: crapi-identity:8080
+      LOG_LEVEL: INFO
+      MONGO_DB_HOST: mongodb
+      MONGO_DB_NAME: crapi
+      MONGO_DB_PASSWORD: crapisecretpassword
+      MONGO_DB_PORT: "27017"
+      MONGO_DB_USER: admin
+      SERVER_PORT: "8087"
+      TLS_CERTIFICATE: certs/server.crt
+      TLS_ENABLED: "false"
+      TLS_KEY: certs/server.key
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - /app/health.sh
+      timeout: 15s
+      interval: 15s
+      retries: 15
+    image: crapi/crapi-community:latest
+    networks:
+      default: null
+  crapi-identity:
+    container_name: crapi-identity
+    depends_on:
+      mailhog:
+        condition: service_healthy
+        required: true
+      mongodb:
+        condition: service_healthy
+        required: true
+      postgresdb:
+        condition: service_healthy
+        required: true
+    deploy:
+      resources:
+        limits:
+          cpus: 0.8
+          memory: "402653184"
+    environment:
+      API_GATEWAY_URL: https://api.mypremiumdealership.com
+      DB_HOST: postgresdb
+      DB_NAME: crapi
+      DB_PASSWORD: crapisecretpassword
+      DB_PORT: "5432"
+      DB_USER: admin
+      ENABLE_LOG4J: "false"
+      ENABLE_SHELL_INJECTION: "false"
+      JWT_EXPIRATION: "604800000"
+      JWT_SECRET: crapi
+      LOG_LEVEL: INFO
+      MAILHOG_DOMAIN: example.com
+      MAILHOG_HOST: mailhog
+      MAILHOG_PORT: "1025"
+      SERVER_PORT: "8080"
+      SMTP_AUTH: "true"
+      SMTP_EMAIL: user@example.com
+      SMTP_FROM: no-reply@example.com
+      SMTP_HOST: smtp.example.com
+      SMTP_PASS: xxxxxxxxxxxxxx
+      SMTP_PORT: "587"
+      SMTP_STARTTLS: "true"
+      TLS_ENABLED: "false"
+      TLS_KEY_ALIAS: identity
+      TLS_KEY_PASSWORD: passw0rd
+      TLS_KEYSTORE: classpath:certs/server.p12
+      TLS_KEYSTORE_PASSWORD: passw0rd
+      TLS_KEYSTORE_TYPE: PKCS12
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - /app/health.sh
+      timeout: 15s
+      interval: 15s
+      retries: 15
+    image: crapi/crapi-identity:latest
+    networks:
+      default: null
+    volumes:
+      - type: bind
+        source: /home/kali/APISHEILD/APIShield-crAPI-DevSecOps/deploy/docker/keys
+        target: /app/keys
+        bind:
+          create_host_path: true
+  crapi-web:
+    container_name: crapi-web
+    depends_on:
+      crapi-community:
+        condition: service_healthy
+        required: true
+      crapi-identity:
+        condition: service_healthy
+        required: true
+      crapi-workshop:
+        condition: service_healthy
+        required: true
+    deploy:
+      resources:
+        limits:
+          cpus: 0.3
+          memory: "134217728"
+    environment:
+      CHATBOT_SERVICE: crapi-chatbot:5002
+      COMMUNITY_SERVICE: crapi-community:8087
+      IDENTITY_SERVICE: crapi-identity:8080
+      MAILHOG_WEB_SERVICE: mailhog:8025
+      TLS_ENABLED: "false"
+      WORKSHOP_SERVICE: crapi-workshop:8000
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl 0.0.0.0:80/health
+      timeout: 15s
+      interval: 15s
+      retries: 15
+    image: crapi/crapi-web:latest
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 80
+        published: "8888"
+        protocol: tcp
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 80
+        published: "30080"
+        protocol: tcp
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 443
+        published: "8443"
+        protocol: tcp
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 443
+        published: "30443"
+        protocol: tcp
+  crapi-workshop:
+    container_name: crapi-workshop
+    depends_on:
+      crapi-community:
+        condition: service_healthy
+        required: true
+      crapi-identity:
+        condition: service_healthy
+        required: true
+      mongodb:
+        condition: service_healthy
+        required: true
+      postgresdb:
+        condition: service_healthy
+        required: true
+    deploy:
+      resources:
+        limits:
+          cpus: 1
+          memory: "536870912"
+    environment:
+      API_GATEWAY_URL: https://api.mypremiumdealership.com
+      DB_CONN_MAX_AGE: "600"
+      DB_HOST: postgresdb
+      DB_NAME: crapi
+      DB_PASSWORD: crapisecretpassword
+      DB_PORT: "5432"
+      DB_USER: admin
+      FILES_LIMIT: "1000"
+      GUNICORN_MAX_REQUESTS: "1000"
+      GUNICORN_MAX_REQUESTS_JITTER: "50"
+      GUNICORN_TIMEOUT: "120"
+      GUNICORN_WORKERS: "4"
+      IDENTITY_SERVICE: crapi-identity:8080
+      LOG_LEVEL: INFO
+      MONGO_DB_HOST: mongodb
+      MONGO_DB_NAME: crapi
+      MONGO_DB_PASSWORD: crapisecretpassword
+      MONGO_DB_PORT: "27017"
+      MONGO_DB_USER: admin
+      SECRET_KEY: crapi
+      SERVER_PORT: "8000"
+      TLS_CERTIFICATE: certs/server.crt
+      TLS_ENABLED: "false"
+      TLS_KEY: certs/server.key
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - /app/health.sh
+      timeout: 15s
+      interval: 15s
+      retries: 15
+    image: crapi/crapi-workshop:latest
+    networks:
+      default: null
+  mailhog:
+    container_name: mailhog
+    deploy:
+      resources:
+        limits:
+          cpus: 0.3
+          memory: "134217728"
+    environment:
+      MH_MONGO_URI: admin:crapisecretpassword@mongodb:27017
+      MH_STORAGE: mongodb
+    healthcheck:
+      test:
+        - CMD
+        - nc
+        - -z
+        - localhost
+        - "8025"
+      timeout: 15s
+      interval: 15s
+      retries: 15
+    image: crapi/mailhog:latest
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 8025
+        published: "8025"
+        protocol: tcp
+  mongodb:
+    container_name: mongodb
+    deploy:
+      resources:
+        limits:
+          cpus: 0.3
+          memory: "134217728"
+    environment:
+      MONGO_INITDB_ROOT_PASSWORD: crapisecretpassword
+      MONGO_INITDB_ROOT_USERNAME: admin
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - echo 'db.runCommand("ping").ok' | mongo mongodb:27017/test --quiet
+      timeout: 15s
+      interval: 15s
+      retries: 15
+      start_period: 20s
+    image: mongo:4.4
+    networks:
+      default: null
+    volumes:
+      - type: volume
+        source: mongodb-data
+        target: /data/db
+        volume: {}
+  postgresdb:
+    command:
+      - postgres
+      - -c
+      - max_connections=500
+    container_name: postgresdb
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: "268435456"
+    environment:
+      POSTGRES_DB: crapi
+      POSTGRES_PASSWORD: crapisecretpassword
+      POSTGRES_USER: admin
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready
+      timeout: 15s
+      interval: 15s
+      retries: 15
+    image: postgres:14
+    networks:
+      default: null
+    volumes:
+      - type: volume
+        source: postgresql-data
+        target: /var/lib/postgresql/data
+        volume: {}
+networks:
+  default:
+    name: docker_default
+volumes:
+  chromadb-data:
+    name: docker_chromadb-data
+  mongodb-data:
+    name: docker_mongodb-data
+  postgresql-data:
+    name: docker_postgresql-data

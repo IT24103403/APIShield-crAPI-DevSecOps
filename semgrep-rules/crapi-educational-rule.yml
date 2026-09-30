@@ -1,0 +1,25 @@
+rules:
+
+  - id: apishield-unsafe-eval
+
+    message: Avoid eval because untrusted input may result in code execution.
+
+    severity: ERROR
+
+    languages:
+
+      - javascript
+
+      - typescript
+
+    patterns:
+
+      - pattern: eval($X)
+
+    metadata:
+
+      category: security
+
+      project: APIShield
+
+      educational: true
