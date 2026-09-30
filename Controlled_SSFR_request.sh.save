@@ -1,0 +1,11 @@
+curl --url 'http://98.70.73.39:8888/workshop/api/merchant/contact_mechanic' \
+  -H 'Accept: */*' \
+  -H 'Accept-Language: en-US,en-GB;q=0.9,en-ZA;q=0.8,en;q=0.7,si;q=0.6' \
+  -H 'Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJnZW5hZGV5NjM2QG5jbGVhcC5jb20iLCJpYXQiOjE3OTA0MDAxMDEsImV4cCI6MTc5MTAwNDkwMSwicm9sZSI6InVzZXIifQ.FiWUpuh3tTKCWayTXYjlnDuqdp4h7RcfjLxmpADTT99trG8INTIHn5wtguwqDXZbbApnOmE7Bi84L3PS9IRQRGV5keb63MmoWOjEo62r_Dgmfvmx8DC3Hf-h2zyLz7MYfwE1Pv3FfnPEfIvv4RtheRxalKiHYdOJmjgtieSxqytclplLCwY8XMY8Xj1w58Q_wFoiljPdCILaCMm9HMFX-OXkhkwwDcCW03si950Tiiv51C0F1cE4YQKcbCt0hYMG0A6Tju_kn58a2DlZOb0t1nK_tWMlvvPlAah4_rIcb7qE0sZa1z6dLn2MbChs6X3_ngu8bw3r7f1ab4-iaVDboA' \
+  -H 'Connection: keep-alive' \
+  -H 'Content-Type: application/json' \
+  -H 'Origin: http://98.70.73.39:8888' \
+  -H 'Referer: http://98.70.73.39:8888/contact-mechanic?VIN=VHZB65N2WD8SJG9J1' \
+  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36' \
+  --data-raw '{"mechanic_code":"TRAC_JME","problem_details":"jgjg","vin":"VHZB65N2WD8SJG9J1","mechanic_api":"http://98.70.73.39:8888/workshop/api/mechanic/receive_report","repeat_request_if_failed":false,"number_of_repeats":1}' \
+  --insecure

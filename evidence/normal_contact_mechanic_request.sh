@@ -1,0 +1,11 @@
+curl --url ^"http://98.70.73.39:8888/workshop/api/merchant/contact_mechanic^" ^
+  -H ^"Accept: */*^" ^
+  -H ^"Accept-Language: en-US,en-GB;q=0.9,en-ZA;q=0.8,en;q=0.7,si;q=0.6^" ^
+  -H ^"Authorization: Bearer [REDACTED]^" ^
+  -H ^"Connection: keep-alive^" ^
+  -H ^"Content-Type: application/json^" ^
+  -H ^"Origin: http://98.70.73.39:8888^" ^
+  -H ^"Referer: http://98.70.73.39:8888/contact-mechanic?VIN=VHZB65N2WD8SJG9J1^" ^
+  -H ^"User-Agent: Mozilla/5.0 ^(Windows NT 10.0; Win64; x64^) AppleWebKit/537.36 ^(KHTML, like Gecko^) Chrome/154.0.0.0 Safari/537.36^" ^
+  --data-raw ^"^{^\^"mechanic_code^\^":^\^"TRAC_JME^\^",^\^"problem_details^\^":^\^"jgjg^\^",^\^"vin^\^":^\^"VHZB65N2WD8SJG9J1^\^",^\^"mechanic_api^\^":^\^"http://98.70.73.39:8888/workshop/api/mechanic/receive_report^\^",^\^"repeat_request_if_failed^\^":false,^\^"number_of_repeats^\^":1^}^" ^
+  --insecure
