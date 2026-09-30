@@ -1,3 +1,19 @@
+deploy/vagrant/*.log
+deploy/vagrant/.vagrant
+.secrets
+.vscode/
+*.local
+services/chatbot/db
+services/certs/
+docker-compose.local.yml
+
+# Local environment and secret files
+.env
+.env.*
+!.env.example
+
+# Local backup files
+*.backup
 *.bak
 evidence/member-2/05-vulnerability/testing/*_test.sh
 evidence/member-2/05-vulnerability/testing/order_put_request*.sh
