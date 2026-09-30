@@ -1,0 +1,3 @@
+     23 ERROR
+      9 INFO
+    108 WARNING
